@@ -5,7 +5,7 @@
 ### Step 1 clone this repo
 
 ```bash
-git clone https://gitee.com/SuzhenProjects/pressure_watcher.git
+git clone https://github.com/ooopSnake/pressure_watcher
 ```
 
 ### Step 2 build
