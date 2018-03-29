@@ -3,7 +3,10 @@
 ## GetStarted
 
 ### Step 1 clone this repo
+
+```bash
 git clone https://gitee.com/SuzhenProjects/pressure_watcher.git
+```
 
 ### Step 2 build
 
