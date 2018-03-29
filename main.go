@@ -88,7 +88,7 @@ func GetCpuUsage() []string {
 		deltaS := (float64)(stat2.System - stat1.System)
 		deltaI := (float64)(stat2.Idle - stat1.Idle)
 		val := 100 * (deltaU + deltaN + deltaS) / (deltaU + deltaN + deltaS + deltaI)
-		cpuUsageAll = append(cpuUsageAll, fmt.Sprintf("%.01f%%", val))
+		cpuUsageAll = append(cpuUsageAll, fmt.Sprintf("%.01f %%", val))
 	}
 	return cpuUsageAll
 }
