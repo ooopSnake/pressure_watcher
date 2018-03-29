@@ -1,0 +1,4 @@
+pressure_watcher_*
+send*.sh
+vendor/
+.idea/
