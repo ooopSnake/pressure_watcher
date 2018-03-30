@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	"net/http"
 	"os"
 )
@@ -14,6 +15,7 @@ func StartServer(addr string, fun RequestHandler) {
 	defer e.Close()
 	e.HidePort = true
 	e.HideBanner = true
+	e.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))
 	e.GET("/*", func(ctx echo.Context) error {
 		jsonObj := fun()
 		return ctx.JSONPretty(http.StatusOK, jsonObj, "  ")
