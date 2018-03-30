@@ -5,13 +5,13 @@ package main
 import (
 	"strconv"
 	"fmt"
-	"encoding/json"
 	"io/ioutil"
 	"runtime"
 	"strings"
 	linuxproc "github.com/c9s/goprocinfo/linux"
 	"time"
 	"os"
+	"flag"
 )
 
 const CpuFreqFilePatten = "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_cur_freq"
@@ -99,16 +99,16 @@ type CpuInfo struct {
 	Usage string `json:"usage"`
 }
 
-func main() {
-	if !CheckRoot() {
-		fmt.Println("require root !")
-		os.Exit(1)
-	}
+var bindAddr = flag.String("addr", "", "http addr , eg : 127.0.0.1")
+var bindPort = flag.String("port", "12345", "http listen port , eg : 8080")
+
+func genCpuStat() interface{} {
 	coreNum := runtime.NumCPU()
 	cpuFreq := GetCpuFreq()
 	cpuUsage := GetCpuUsage()
+	retJsonObj := make(map[string]interface{})
 	if len(cpuFreq) != coreNum || len(cpuFreq) != len(cpuUsage) {
-		return
+		return retJsonObj
 	}
 	cpuInfo := make([]CpuInfo, 0, coreNum)
 	for i := 0; i < coreNum; i++ {
@@ -117,14 +117,17 @@ func main() {
 			Freq:  cpuFreq[i],
 			Usage: cpuUsage[i]})
 	}
-	retJsonObj := map[string]interface{}{
-		"cpuInfo": cpuInfo,
-		"cpuTemp": GetCpuTemp(),
+	retJsonObj["cpuInfo"] = cpuInfo
+	retJsonObj["cpuTemp"] = GetCpuTemp()
+	return retJsonObj
+}
+
+func main() {
+	if !CheckRoot() {
+		fmt.Println("require root !")
+		os.Exit(1)
 	}
-	if jsonBytes, err := json.MarshalIndent(retJsonObj, "", "  "); err != nil {
-		panic(err)
-	} else {
-		fmt.Println(string(jsonBytes))
-	}
+	flag.Parse()
+	StartServer(fmt.Sprintf("%s:%s", *bindAddr, *bindPort), genCpuStat)
 	//default exit 0
 }
