@@ -3,15 +3,16 @@
 package main
 
 import (
-	"strconv"
-	"fmt"
-	"io/ioutil"
-	"runtime"
-	"strings"
-	linuxproc "github.com/c9s/goprocinfo/linux"
-	"time"
-	"os"
+	"encoding/json"
 	"flag"
+	"fmt"
+	linuxproc "github.com/c9s/goprocinfo/linux"
+	"io/ioutil"
+	"os"
+	"runtime"
+	"strconv"
+	"strings"
+	"time"
 )
 
 const CpuFreqFilePatten = "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_cur_freq"
@@ -101,6 +102,7 @@ type CpuInfo struct {
 
 var bindAddr = flag.String("addr", "", "http addr , eg : 127.0.0.1")
 var bindPort = flag.String("port", "12345", "http listen port , eg : 8080")
+var noHttp = flag.Bool("nohttp", false, "disable http server")
 
 func genCpuStat() interface{} {
 	coreNum := runtime.NumCPU()
@@ -128,6 +130,11 @@ func main() {
 		os.Exit(1)
 	}
 	flag.Parse()
-	StartServer(fmt.Sprintf("%s:%s", *bindAddr, *bindPort), genCpuStat)
+	if *noHttp {
+		out, _ := json.MarshalIndent(genCpuStat(), "", "  ")
+		fmt.Printf("%s\n", out)
+	} else {
+		StartServer(fmt.Sprintf("%s:%s", *bindAddr, *bindPort), genCpuStat)
+	}
 	//default exit 0
 }

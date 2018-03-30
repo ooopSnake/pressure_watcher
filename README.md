@@ -49,7 +49,17 @@ sudo ./pressure_watcher_arm
   "cpuTemp": "39.9 °C"
 }
 ```
+## CommandFlags
 
+```bash
+Usage of ./pressure_watcher:
+  -addr string
+    	http addr , eg : 127.0.0.1 (default "0.0.0.0")
+  -nohttp
+    	disable http server
+  -port string
+    	http listen port , eg : 8080 (default "12345")
+```
 
 ## License
 WTFPL
